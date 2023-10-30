@@ -1,8 +1,9 @@
+
 pipeline {
     agent any
 
     stages {
-        stage('clone the code') {
+        stage('clone the code from git hub') {
             steps {
                 git url:"https://github.com/basantgit/django-notes-app.git", branch: "main"
             }
@@ -13,7 +14,7 @@ pipeline {
                 sh "docker build -t basant-note-app ."
             }
         }
-        stage('push to the docker hub') {
+        stage('push the image into docker hub') {
             steps {
                 echo "Pushing the image to docker hub"
                 withCredentials([usernamePassword(credentialsId:"docker-crds",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
@@ -23,7 +24,7 @@ pipeline {
                 }
             }
         }
-        stage('deploy') {
+        stage('deploy note application in docker container') {
             steps {
                 echo "Deploying the container"
                 sh "docker-compose down && docker-compose up -d"
